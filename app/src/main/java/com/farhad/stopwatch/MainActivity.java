@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int seconds = 0;
     private boolean running;
+    private boolean wasRunning;
     ImageView btnPayPause;
     CardView leftEarBg, rightEarBg, beatCard, bottomCard;
     Animation animation, animation2, animation3;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             seconds = savedInstanceState.getInt("seconds");
             running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
         }
 
         btnPayPause = findViewById(R.id.idPlayPause);
@@ -47,18 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("seconds", seconds);
-        savedInstanceState.putBoolean("running", running);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        animations();
-    }
 
 
     //Start the stopwatch running when the Start button is clicked.
@@ -149,4 +141,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
+//        if (wasRunning) {
+//            running = true;
+//        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        animations();
+        Toast.makeText(this, "onResume ", Toast.LENGTH_SHORT).show();
+        if (wasRunning) {
+            running = true;
+            playButtonImage();
+        }
+
+
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(this, "onPause", Toast.LENGTH_SHORT).show();
+        wasRunning = running;
+        running = false;
+
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
+//        wasRunning = running;
+//        running = false;
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Toast.makeText(this, "onDestroy", Toast.LENGTH_SHORT).show();
+
+    }
 }
